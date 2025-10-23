@@ -1,28 +1,23 @@
-'use client'; // This component handles the animations, so it must be a client component.
+'use client'; // This is also required because it handles the list animation logic.
 
 import ShowCard from './ShowCard';
 import { motion, Variants } from 'framer-motion';
 
-// Define the shape of the 'show' object
+// Define the shape of the 'show' object again for this component
 type Show = {
   id: number;
-  created_at: string;
   name: string;
   price: number;
   ticketsLeft: number;
   image: string;
 };
 
-// Animation settings for the grid container
+// Animation settings
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-// Animation settings for each individual card
 const cardVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
   visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },

@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabaseClient';
-import ShowList from '@/components/ShowList'; // Import our new wrapper component
+import ShowList from '@/components/ShowList'; // Import our client wrapper
 
-// This function fetches the show data from your Supabase database.
+// This is a Server Component. It fetches data.
 async function getShows() {
   const { data, error } = await supabase
     .from('shows')
@@ -16,7 +16,6 @@ async function getShows() {
 }
 
 export default async function Home() {
-  // 1. Fetch the data on the server
   const shows = await getShows();
 
   return (
@@ -28,7 +27,7 @@ export default async function Home() {
         <p className="text-lg text-gray-400 font-light">Grab your tickets before they're gone ⚡</p>
       </header>
 
-      {/* 2. Pass the data to the client component to handle rendering and animations */}
+      {/* Pass the server-fetched data to the client component */}
       {shows && shows.length > 0 ? (
         <ShowList shows={shows} />
       ) : (

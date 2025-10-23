@@ -1,12 +1,11 @@
-'use client'; // <-- THIS IS THE FIX!
+'use client'; // This is required because it uses animations.
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-// This type definition must match your Supabase table structure
+// Type definition for a single show
 type ShowType = {
   id: number;
-  created_at: string;
   name: string;
   price: number;
   ticketsLeft: number;
@@ -33,7 +32,7 @@ export default function ShowCard({ show }: { show: ShowType }) {
             <p className="text-xl font-bold text-fuchsia-400">₹{show.price}</p>
             <p className="text-xs font-medium text-gray-400">{show.ticketsLeft} left</p>
           </div>
-          <button 
+          <button
             disabled={show.ticketsLeft === 0}
             className="w-full bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-bold py-2.5 px-4 rounded-lg group-hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
