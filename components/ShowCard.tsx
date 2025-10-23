@@ -1,9 +1,9 @@
-'use client'; // This is required because it uses animations.
+'use client'; // This must be a client component for the hover animation.
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-// Type definition for a single show
+// Define the data structure for a single show
 type ShowType = {
   id: number;
   name: string;
