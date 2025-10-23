@@ -1,48 +1,64 @@
-'use client';
-
 import ShowCard from '@/components/ShowCard';
-import { motion, Variants } from 'framer-motion';
+import { supabase } from '@/lib/supabaseClient';
 
-const shows = [
-  { id: 1, name: "Chatrapathi (2005)", price: 39, ticketsLeft: 50, image: "/images/show1.png" },
-  { id: 2, name: "They Call Him OG", price: 29, ticketsLeft: 8, image: "/images/show2.jpg" },
-  { id: 3, name: "Akhanda", price: 29, ticketsLeft: 120, image: "/images/show3.jpg" },
-  { id: 4, name: "Khaleja", price: 39, ticketsLeft: 3, image: "/images/show4.jpg" },
-];
+// This function adds detailed logging to find the error.
+async function getShows() {
+  console.log("--- Starting Supabase Fetch Test ---");
 
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-};
+  // Test 1: Check if environment variables are loaded
+  const urlLoaded = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const keyLoaded = !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  console.log(`Supabase URL loaded: ${urlLoaded}`);
+  console.log(`Supabase Key loaded: ${keyLoaded}`);
 
-const cardVariants: Variants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: "easeOut" } },
-};
+  if (!urlLoaded || !keyLoaded) {
+    console.error("🔴 CRITICAL: Environment variables are NOT loaded. Check your .env.local file and restart the server.");
+    return [];
+  }
 
-export default function Home() {
+  // Test 2: Attempt to fetch data
+  const { data, error } = await supabase
+    .from('shows')
+    .select('*')
+    .order('id', { ascending: true });
+
+  if (error) {
+    // This will print the exact error from Supabase
+    console.error("🔴 Supabase fetch FAILED. Full error object:", JSON.stringify(error, null, 2));
+    return [];
+  }
+
+  if (!data || data.length === 0) {
+    console.warn("🟡 Fetch successful, but NO DATA was returned. Check two things:");
+    console.warn("1. Is your 'shows' table in Supabase completely empty?");
+    console.warn("2. Is Row Level Security (RLS) enabled on the 'shows' table? If so, disable it for this test.");
+  } else {
+    console.log("✅ Fetch SUCCESSFUL! Data received:", data);
+  }
+  
+  console.log("--- Test Complete ---");
+  return data || [];
+}
+
+export default async function Home() {
+  const shows = await getShows();
+
   return (
     <main className="min-h-screen text-white p-8 md:p-12 overflow-hidden">
       <header className="text-center mb-16">
-        {/* New vibrant gradient and style */}
         <h1 className="text-5xl md:text-6xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-500 via-pink-500 to-purple-600">
           electroflix
         </h1>
-        <p className="text-lg text-gray-400 font-light">Grab your tickets before they're gone⚡</p>
+        <p className="text-lg text-gray-400 font-light">Grab your tickets before they're gone ⚡</p>
       </header>
 
-      <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {shows.map((show) => (
-          <motion.div key={show.id} variants={cardVariants}>
-            <ShowCard show={show} />
-          </motion.div>
-        ))}
-      </motion.div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {shows && shows.length > 0 ? (
+          shows.map((show) => <ShowCard key={show.id} show={show} />)
+        ) : (
+          <p className="col-span-full text-center text-gray-400">Could not load shows. Check the terminal for errors.</p>
+        )}
+      </div>
     </main>
   );
 }
