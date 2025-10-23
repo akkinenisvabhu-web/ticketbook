@@ -1,9 +1,9 @@
-'use client'; // This must be a client component to handle animations.
+'use client';
 
 import ShowCard from './ShowCard';
 import { motion, Variants } from 'framer-motion';
 
-// Define the data structure for a single show
+// The 'Show' type is defined here as well
 type Show = {
   id: number;
   name: string;
@@ -12,23 +12,14 @@ type Show = {
   image: string;
 };
 
-// Animation settings for the grid container
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
 };
 
-// Animation settings for each individual card
 const cardVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
-  visible: { 
-    y: 0, 
-    opacity: 1, 
-    transition: { type: 'spring', stiffness: 100, damping: 10 } 
-  },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
 };
 
 export default function ShowList({ shows }: { shows: Show[] }) {
