@@ -17,14 +17,18 @@ const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }, // Cards appear one by one
+    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
   },
 };
 
 // Animation settings for each individual card
 const cardVariants: Variants = {
   hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.4, ease: 'easeOut' } },
+  visible: { 
+    y: 0, 
+    opacity: 1, 
+    transition: { type: 'spring', stiffness: 100, damping: 10 } 
+  },
 };
 
 export default function ShowList({ shows }: { shows: Show[] }) {
